@@ -22,7 +22,7 @@ type AppConfiguration struct {
 type DatabaseConfig struct {
 	Name     string `mapstructure:"DB_NAME"`
 	Port     int    `mapstructure:"DB_PORT"`
-	Host     string `mapstructure:"DB_ADDRESS"`
+	Host     string `mapstructure:"DB_HOST"`
 	Username string `mapstructure:"DB_USERNAME"`
 	Password string `mapstructure:"DB_PASSWORD"`
 }

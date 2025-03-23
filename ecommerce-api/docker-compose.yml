@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  database:
+    image: mysql:latest
+    container_name: mysql-nex
+    networks:
+      - my-networks
+    expose:
+      - "3308"
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_USER=newuser
+      - MYSQL_PASSWORD=userpassword
+      - MYSQL_DATABASE=nextmedis
+      - MYSQL_ROOT_PASSWORD=root123
+
+  next-test:
+    image: nex-test
+    container_name: nex-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7899:7899"
+    expose:
+      - "7899"
+    restart: always
+    depends_on:
+      - database
+    networks:
+      - my-networks
+
+
+networks:
+  my-networks:

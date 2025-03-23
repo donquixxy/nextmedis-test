@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "e22becd8-3bd9-4882-ab75-2d48b3424233",
+		"name": "Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20597850",
+		"_collection_link": "https://dark-water-637558.postman.co/workspace/My-Workspace~6927c637-dbf6-4b3b-8be0-440adc548ae4/collection/20597850-e22becd8-3bd9-4882-ab75-2d48b3424233?action=share&source=collection_link&creator=20597850"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "agusari@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7899/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "agus ari",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "agusari@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7899/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Samsung S24",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "120000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7899/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7899/product?limit=10&page=1&all=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"product"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "all",
+									"value": "true"
+								},
+								{
+									"key": "name",
+									"value": "smart",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Add Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxZmJkNDZiLTFkOTUtNGMxNS1hYzQ4LTQ4NmYzYmRjNWEzNCIsImlzcyI6ImFyaSIsInN1YiI6InRlc3QiLCJleHAiOjE3NDI5MDg2OTUsImlhdCI6MTc0MjY0OTQ5NSwianRpIjoiZDFmYmQ0NmItMWQ5NS00YzE1LWFjNDgtNDg2ZjNiZGM1YTM0In0.nK2y1X12WWwHuVzGZbRL7VjgWbhXi6ynSCL6WvDzEJw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_id",
+									"value": "a5e6c938-5e03-48e6-8c5b-f36f6c14b161",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7899/api/cart",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"api",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxZmJkNDZiLTFkOTUtNGMxNS1hYzQ4LTQ4NmYzYmRjNWEzNCIsImlzcyI6ImFyaSIsInN1YiI6InRlc3QiLCJleHAiOjE3NDI5MTEzNDUsImlhdCI6MTc0MjY1MjE0NSwianRpIjoiZDFmYmQ0NmItMWQ5NS00YzE1LWFjNDgtNDg2ZjNiZGM1YTM0In0.OcwW20Jri_S6ZMEi8RrYchvAfGv4yww1kv5nJZ9f2TA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7899/api/cart",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"api",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Place Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxZmJkNDZiLTFkOTUtNGMxNS1hYzQ4LTQ4NmYzYmRjNWEzNCIsImlzcyI6ImFyaSIsInN1YiI6InRlc3QiLCJleHAiOjE3NDI5MTEzNDUsImlhdCI6MTc0MjY1MjE0NSwianRpIjoiZDFmYmQ0NmItMWQ5NS00YzE1LWFjNDgtNDg2ZjNiZGM1YTM0In0.OcwW20Jri_S6ZMEi8RrYchvAfGv4yww1kv5nJZ9f2TA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "cart_id",
+									"value": "54286a80-7cd8-413f-ac42-c6e7a32fb60a",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7899/api/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7899",
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
