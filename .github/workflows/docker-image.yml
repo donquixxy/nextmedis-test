@@ -11,23 +11,28 @@ on:
       - master
     paths:
       - "ecommerce-api/**"
+  workflow_dispatch:
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify directory exists
+        run: ls -l
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Build and Push Docker Image
+        working-directory: ecommerce-api
         run: |
-          cd ecommerce-api
           IMAGE_NAME=nexmedis
           TAG=$(git rev-parse --short HEAD)
-          docker build . --file ecommerce-api/Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
+          docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
