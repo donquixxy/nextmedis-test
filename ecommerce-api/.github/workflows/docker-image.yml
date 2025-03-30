@@ -3,13 +3,20 @@ name: Build
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - "ecommerce-api/**"
   pull_request:
     branches: [ "master" ]
+    paths:
+      - "ecommerce-api/**"
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ecommerce-api
 
     steps:
       - name: Checkout repository
