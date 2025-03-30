@@ -11,7 +11,6 @@ import (
 	"ecommerce-api/modules/user"
 	"ecommerce-api/server"
 	"fmt"
-	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
 	"os"
 	"os/signal"
@@ -45,7 +44,6 @@ func bootstrapApp() commons.Options {
 	}
 
 	runAutoMigrate(db)
-	log.Infof("App is running on environment %v", cfg.AppCfg.AppEnv)
 	return commons.Options{
 		Config:   cfg,
 		Database: db,
