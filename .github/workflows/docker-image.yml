@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "ecommerce-api/**"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "ecommerce-api/**"
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ecommerce-api
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_NAME=nexmedis
+          TAG=$(git rev-parse --short HEAD)
+          docker build . --file ecommerce-api/Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
