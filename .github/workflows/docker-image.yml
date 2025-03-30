@@ -16,9 +16,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ecommerce-api
 
     steps:
       - name: Checkout repository
@@ -29,6 +26,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
+          cd ecommerce-api
           IMAGE_NAME=nexmedis
           TAG=$(git rev-parse --short HEAD)
           docker build . --file ecommerce-api/Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
