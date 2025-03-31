@@ -29,10 +29,12 @@ jobs:
         run: |
           ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
           set -x
+          sudo su - << ROOT_EOF
           cd /home/ubuntu || exit 1
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin || exit 1
           docker pull quixxy/nexmedis:${{ env.COMMIT_HASH }} || exit 1
           docker compose stop backend-service || exit 1
           sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.COMMIT_HASH }}|" docker-compose.yml || exit 1
           docker compose up -d backend-service || exit 1
+          ROOT_EOF
           EOF
