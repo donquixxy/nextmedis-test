@@ -26,22 +26,8 @@ jobs:
       - name: Verify directory exists
         run: ls -l
 
-      - name: Increment Version
-        working-directory: ecommerce-api
-        run: |
-          VERSION=$(cat version/new.txt)
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-          PATCH=$((PATCH + 1))
-          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          echo "$NEW_VERSION" > version/new.txt
-          echo "Version incremented to: $NEW_VERSION"
-          echo "DOCKER_TAG=$NEW_VERSION" >> $GITHUB_ENV
-
-      - name: Upload Version File
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-version
-          path: ecommerce-api/version/new.txt
+      - name: Set Commit Hash as Tag
+        run: echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
@@ -50,6 +36,5 @@ jobs:
         working-directory: ecommerce-api
         run: |
           IMAGE_NAME=nexmedis
-          TAG=${{ env.DOCKER_TAG }}
-          docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$TAG
+          docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:${{ env.TAG }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:${{ env.TAG }}

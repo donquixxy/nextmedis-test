@@ -22,22 +22,17 @@ jobs:
           chmod 600 ~/.ssh/aws_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Download App Version Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app-version
-
-      - name: Load APP_VERSION
-        run: echo "APP_VERSION=$(cat ecommerce-api/version/new.txt)" >> $GITHUB_ENV
+      - name: Get Commit Hash
+        run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Deploy Container
         run: |
-          export APP_VERSION=${{ env.APP_VERSION }}
+          export APP_VERSION=${{ env.COMMIT_HASH }}
           ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
           cd /home/ubuntu
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
           docker pull quixxy/nexmedis:${{ env.APP_VERSION }}
           docker-compose down
-          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.APP_VERSION }}|" docker-compose.yml
+          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.COMMIT_HASH }}|" docker-compose.yml
           docker-compose up -d
           EOF
