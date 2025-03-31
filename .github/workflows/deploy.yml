@@ -17,17 +17,19 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/aws_key
+          chmod 600 ~/.ssh/aws_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy Container
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << 'EOF'
-            cd /home/ubuntu
-            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
-            docker-compose down  # Stop running containers
-            docker-compose pull  # Pull latest images from Docker Hub
-            docker-compose up -d  # Restart services
-            docker system prune -af  # Clean up unused Docker resources
+          export DOCKER_TAG=${{env.DOCKER_TAG}}
+          ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
+          cd /home/ubuntu
+          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
+          docker pull quixxy/nexmedis:${{ env.DOCKER_TAG }}
+          docker-compose down
+          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.DOCKER_TAG }}|" docker-compose.yml
+          docker-compose up -d
+          docker system prune -af
           EOF

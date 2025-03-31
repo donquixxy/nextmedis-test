@@ -29,6 +29,9 @@ jobs:
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+      - name: Set Docker Tag
+        run: echo "DOCKER_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Build and Push Docker Image
         working-directory: ecommerce-api
         run: |
