@@ -25,25 +25,14 @@ jobs:
       - name: Get Commit Hash
         run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Connect to SSH
-        run: ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }}
-
-      - name: Change directory
-        run: cd /home/ubuntu
-
-      - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: Pull Newest image
-        run: docker pull quixxy/nexmedis:${{ env.APP_VERSION }}
-
-      - name: Down current backend-service
-        run: docker compose stop backend-service
-
-      - name: Deploy Container
-        run: |          
-          ### Update the docker compose versioning of backend
-          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.COMMIT_HASH }}|" docker-compose.yml
-          
-          ### Up the backend
-          docker-compose up -d backend-version
+      - name: Connect to SSH and Deploy
+        run: |
+          ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
+          set -x
+          cd /home/ubuntu || exit 1
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin || exit 1
+          docker pull quixxy/nexmedis:${{ env.COMMIT_HASH }} || exit 1
+          docker compose stop backend-service || exit 1
+          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.COMMIT_HASH }}|" docker-compose.yml || exit 1
+          docker compose up -d backend-service || exit 1
+          EOF
