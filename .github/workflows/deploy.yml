@@ -1,9 +1,10 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:
@@ -23,8 +24,8 @@ jobs:
 
       - name: Deploy Container
         run: |
-          export DOCKER_TAG=${{env.DOCKER_TAG}}
-          ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
+          export DOCKER_TAG=${{ env.DOCKER_TAG }}
+          ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
           cd /home/ubuntu
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
           docker pull quixxy/nexmedis:${{ env.DOCKER_TAG }}
