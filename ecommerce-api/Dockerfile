@@ -1,14 +1,19 @@
-FROM golang:1.24.1-alpine3.20
+FROM golang:1.24.1-alpine3.20 AS builder
 
 WORKDIR /app
 
 COPY go.mod go.sum ./
-
 RUN go mod download
 
-COPY . .
+COPY . ./
 
-RUN go build -o main .
+RUN go build -ldflags '-s -w' -o main .
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/main ./
 
 EXPOSE 7899
 
