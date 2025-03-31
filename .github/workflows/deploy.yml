@@ -22,6 +22,14 @@ jobs:
           chmod 600 ~/.ssh/aws_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Download Docker Tag Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name:  docker-tag
+
+      - name: Load DOCKER_TAG
+        run: echo "DOCKER_TAG=$(cat DOCKER_TAG.txt)" >> $GITHUB_ENV
+
       - name: Deploy Container
         run: |
           export DOCKER_TAG=${{ env.DOCKER_TAG }}
@@ -32,5 +40,4 @@ jobs:
           docker-compose down
           sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.DOCKER_TAG }}|" docker-compose.yml
           docker-compose up -d
-          docker system prune -af
           EOF

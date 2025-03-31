@@ -32,6 +32,12 @@ jobs:
       - name: Set Docker Tag
         run: echo "DOCKER_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      - name: Upload DOCKER_TAG as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-tag
+          path: DOCKER_TAG.txt
+
       - name: Build and Push Docker Image
         working-directory: ecommerce-api
         run: |
