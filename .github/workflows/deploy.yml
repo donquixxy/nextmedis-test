@@ -22,22 +22,22 @@ jobs:
           chmod 600 ~/.ssh/aws_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Download Docker Tag Artifact
+      - name: Download App Version Artifact
         uses: actions/download-artifact@v4
         with:
-          name:  docker-tag
+          name: app-version
 
-      - name: Load DOCKER_TAG
-        run: echo "DOCKER_TAG=$(cat DOCKER_TAG.txt)" >> $GITHUB_ENV
+      - name: Load APP_VERSION
+        run: echo "APP_VERSION=$(cat ecommerce-api/version/new.txt)" >> $GITHUB_ENV
 
       - name: Deploy Container
         run: |
-          export DOCKER_TAG=${{ env.DOCKER_TAG }}
+          export APP_VERSION=${{ env.APP_VERSION }}
           ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
           cd /home/ubuntu
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
-          docker pull quixxy/nexmedis:${{ env.DOCKER_TAG }}
+          docker pull quixxy/nexmedis:${{ env.APP_VERSION }}
           docker-compose down
-          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.DOCKER_TAG }}|" docker-compose.yml
+          sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.APP_VERSION }}|" docker-compose.yml
           docker-compose up -d
           EOF
