@@ -25,14 +25,23 @@ jobs:
       - name: Get Commit Hash
         run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Change directory
+        run: cd /home/ubuntu
+
+      - name: Down current backend-service
+        run: docker compose stop backend-service
+
       - name: Deploy Container
         run: |
-          export APP_VERSION=${{ env.COMMIT_HASH }}
           ssh -i ~/.ssh/aws_key ${{ secrets.AWS_USERNAME }}@${{ secrets.AWS_HOST }} << EOF
-          cd /home/ubuntu
-          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
           docker pull quixxy/nexmedis:${{ env.APP_VERSION }}
-          docker-compose down
+          
+          ### Update the docker compose versioning of backend
           sed -i "s|image: quixxy/nexmedis:.*|image: quixxy/nexmedis:${{ env.COMMIT_HASH }}|" docker-compose.yml
-          docker-compose up -d
+          
+          ### Up the backend
+          docker-compose up -d backend-version
           EOF
